@@ -3,41 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mon Stream</title>
+    <title>AFK TV</title>
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background-color: #0f0f0f;
             color: white;
             font-family: Arial, sans-serif;
             text-align: center;
-            margin: 0;
-            padding: 20px;
         }
-        h1 { color: #53fc18; }
+        .bandeau {
+            background-color: #53fc18;
+            color: #0f0f0f;
+            padding: 8px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        h1 {
+            color: #53fc18;
+            padding: 20px;
+            font-size: 36px;
+        }
         .video-container {
             width: 80%;
             margin: 0 auto;
         }
-        iframe {
+        iframe.stream {
             width: 100%;
             height: 500px;
             border: none;
         }
+        .discord-btn {
+            display: inline-block;
+            margin: 20px auto;
+            padding: 12px 30px;
+            background-color: #5865F2;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .discord-btn:hover {
+            background-color: #4752c4;
+        }
+        .chat-container {
+            width: 80%;
+            margin: 20px auto;
+            background-color: #1a1a1a;
+            border-radius: 10px;
+            padding: 20px;
+        }
+        .chat-messages {
+            height: 300px;
+            overflow-y: auto;
+            text-align: left;
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #0f0f0f;
+            border-radius: 8px;
+        }
+        .chat-message {
+            margin: 8px 0;
+            padding: 8px;
+            background-color: #1a1a1a;
+            border-radius: 5px;
+            border-left: 3px solid #53fc18;
+        }
+        .chat-input {
+            display: flex;
+            gap: 10px;
+        }
+        .chat-input input {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            background-color: #0f0f0f;
+            color: white;
+            font-size: 14px;
+        }
+        .chat-input button {
+            padding: 10px 20px;
+            background-color: #53fc18;
+            color: #0f0f0f;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .cooldown-msg {
+            color: #ff4444;
+            font-size: 13px;
+            margin-top: 8px;
+            display: none;
+        }
     </style>
 </head>
 <body>
-    <h1>Mon Stream en Direct</h1>
+
+    <!-- Bandeau pub -->
+    <div class="bandeau">
+        🛒 -5% sur le shop avec le code <strong>AFK-TV-2K26</strong> !
+    </div>
+
+    <h1>AFK TV</h1>
+
+    <!-- Stream Kick -->
     <div class="video-container">
         <iframe
+            class="stream"
             src="https://player.kick.com/c-slk"
             allowfullscreen
             allow="autoplay; fullscreen">
         </iframe>
     </div>
-    <br>
-    <a href="https://kick.com/c-slk" 
-       style="color:#53fc18; font-size:18px;">
-       ▶ Regarder directement sur Kick
+
+    <!-- Bouton Discord -->
+    <a href="https://discord.gg/bZB4u7TQvk" 
+       class="discord-btn" 
+       target="_blank">
+       💬 Rejoindre le Discord
     </a>
+
+    <!-- Chat en direct -->
+    <div class="chat-container">
+        <h2 style="color:#53fc18; margin-bottom:15px;">Chat en Direct</h2>
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-input">
+            <input type="text" id="pseudo" placeholder="Ton pseudo" style="max-width:150px;">
+            <input type="text" id="messageInput" placeholder="Ton message...">
+            <button onclick="sendMessage()">Envoyer</button>
+        </div>
+        <p class="cooldown-msg" id="cooldownMsg">⏳ Attends 15 minutes avant d'envoyer un autre message !</p>
+    </div>
+
+    <script>
+        let lastMessageTime = {};
+
+        function sendMessage() {
+            const pseudo = document.getElementById('pseudo').value.trim() || 'Anonyme';
+            const message = document.getElementById('messageInput').value.trim();
+            const cooldownMsg = document.getElementById('cooldownMsg');
+            const now = Date.now();
+
+            if (!message) return;
+
+            // Vérifier cooldown 15 minutes
+            if (lastMessageTime[pseudo] && now - lastMessageTime[pseudo] < 15 * 60 * 1000) {
+                const restant = Math.ceil((15 * 60 * 1000 - (now - lastMessageTime[pseudo])) / 60000);
+                cooldownMsg.style.display = 'block';
+                cooldownMsg.textContent = `⏳ Attends encore ${restant} minute(s) !`;
+                return;
+            }
+
+            cooldownMsg.style.display = 'none';
+            lastMessageTime[pseudo] = now;
+
+            const chatMessages = document.getElementById('chatMessages');
+            const div = document.createElement('div');
+            div.className = 'chat-message';
+            div.innerHTML = `<strong style="color:#53fc18;">${pseudo}</strong> : ${message}`;
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            document.getElementById('messageInput').value = '';
+        }
+
+        // Envoyer avec Entrée
+        document.getElementById('messageInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') sendMessage();
+        });
+    </script>
+
 </body>
 </html>
