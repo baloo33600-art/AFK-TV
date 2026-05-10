@@ -14,8 +14,12 @@
             padding: 20px;
         }
         h1 { color: #53fc18; }
-        iframe {
+        .video-container {
             width: 80%;
+            margin: 0 auto;
+        }
+        iframe {
+            width: 100%;
             height: 500px;
             border: none;
         }
@@ -23,9 +27,17 @@
 </head>
 <body>
     <h1>Mon Stream en Direct</h1>
-    <iframe
-        src="https://player.kick.com/c-slk?muted=false&amp;autoplay=true&amp;parent=baloo33600-art.github.io"
-        allowfullscreen>
-    </iframe>
+    <div class="video-container">
+        <iframe
+            src="https://player.kick.com/c-slk"
+            allowfullscreen
+            allow="autoplay; fullscreen">
+        </iframe>
+    </div>
+    <br>
+    <a href="https://kick.com/c-slk" 
+       style="color:#53fc18; font-size:18px;">
+       ▶ Regarder directement sur Kick
+    </a>
 </body>
 </html>
