@@ -18,24 +18,38 @@
             padding: 8px;
             font-weight: bold;
             font-size: 14px;
+            overflow: hidden;
+            white-space: nowrap;
         }
-        h1 {
-            color: #53fc18;
-            padding: 20px;
-            font-size: 36px;
+        .bandeau-inner {
+            display: inline-block;
+            animation: defilement 15s linear infinite;
         }
-        .video-container {
-            width: 80%;
-            margin: 0 auto;
+        @keyframes defilement {
+            0% { transform: translateX(100vw); }
+            100% { transform: translateX(-100%); }
         }
-        iframe.stream {
-            width: 100%;
-            height: 500px;
-            border: none;
+        .logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 20px auto;
+            display: block;
+            border: 3px solid #53fc18;
+        }
+        h1 { color: #53fc18; padding: 10px 20px 20px; font-size: 36px; }
+        .visiteurs { color: #aaa; font-size: 14px; margin-bottom: 15px; }
+        .video-container { width: 80%; margin: 0 auto; }
+        iframe.stream { width: 100%; height: 500px; border: none; }
+        .boutons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px auto;
+            flex-wrap: wrap;
         }
         .discord-btn {
             display: inline-block;
-            margin: 20px auto;
             padding: 12px 30px;
             background-color: #5865F2;
             color: white;
@@ -44,12 +58,21 @@
             font-size: 18px;
             font-weight: bold;
         }
-        .discord-btn:hover {
-            background-color: #4752c4;
+        .discord-btn:hover { background-color: #4752c4; }
+        .kick-btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: #53fc18;
+            color: #0f0f0f;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
         }
+        .kick-btn:hover { background-color: #3fd410; }
         .chat-container {
             width: 80%;
-            margin: 20px auto;
+            margin: 20px auto 40px;
             background-color: #1a1a1a;
             border-radius: 10px;
             padding: 20px;
@@ -70,12 +93,9 @@
             border-radius: 5px;
             border-left: 3px solid #53fc18;
         }
-        .chat-input {
-            display: flex;
-            gap: 10px;
-        }
+        .heure { font-size: 11px; color: #888; margin-left: 8px; }
+        .chat-input { display: flex; gap: 10px; flex-wrap: wrap; }
         .chat-input input {
-            flex: 1;
             padding: 10px;
             border-radius: 8px;
             border: none;
@@ -83,6 +103,8 @@
             color: white;
             font-size: 14px;
         }
+        #pseudo { width: 150px; }
+        #messageInput { flex: 1; min-width: 200px; }
         .chat-input button {
             padding: 10px 20px;
             background-color: #53fc18;
@@ -92,22 +114,39 @@
             font-weight: bold;
             cursor: pointer;
         }
-        .cooldown-msg {
-            color: #ff4444;
-            font-size: 13px;
-            margin-top: 8px;
-            display: none;
+        .char-count { font-size: 12px; color: #888; text-align: right; margin-top: 5px; }
+        .cooldown-msg { color: #ff4444; font-size: 13px; margin-top: 8px; display: none; }
+
+        /* RESPONSIVE MOBILE */
+        @media (max-width: 768px) {
+            .video-container { width: 100%; }
+            iframe.stream { height: 250px; }
+            .chat-container { width: 95%; }
+            h1 { font-size: 24px; }
+            .boutons { flex-direction: column; align-items: center; }
+            #pseudo { width: 100%; }
+            #messageInput { width: 100%; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Bandeau pub -->
+    <!-- Bandeau défilant -->
     <div class="bandeau">
-        🛒 -5% sur le shop avec le code <strong>AFK-TV-2K26</strong> !
+        <span class="bandeau-inner">
+            🛒 -5% sur le shop avec le code <strong>AFK-TV-2K26</strong> ! &nbsp;&nbsp;&nbsp;&nbsp;
+            🛒 -5% sur le shop avec le code <strong>AFK-TV-2K26</strong> ! &nbsp;&nbsp;&nbsp;&nbsp;
+            🛒 -5% sur le shop avec le code <strong>AFK-TV-2K26</strong> !
+        </span>
     </div>
 
+    <!-- Logo -->
+    <img src="logo.png" alt="AFK TV Logo" class="logo">
+
     <h1>AFK TV</h1>
+
+    <!-- Compteur visiteurs -->
+    <div class="visiteurs">👥 <span id="compteur">...</span> visiteurs en ligne</div>
 
     <!-- Stream Kick -->
     <div class="video-container">
@@ -119,37 +158,53 @@
         </iframe>
     </div>
 
-    <!-- Bouton Discord -->
-    <a href="https://discord.gg/bZB4u7TQvk" 
-       class="discord-btn" 
-       target="_blank">
-       💬 Rejoindre le Discord
-    </a>
+    <!-- Boutons -->
+    <div class="boutons">
+        <a href="https://discord.gg/bZB4u7TQvk" class="discord-btn" target="_blank">💬 Rejoindre le Discord</a>
+        <a href="https://kick.com/c-slk" class="kick-btn" target="_blank">🎮 Suivre sur Kick</a>
+    </div>
 
-    <!-- Chat en direct -->
+    <!-- Chat -->
     <div class="chat-container">
         <h2 style="color:#53fc18; margin-bottom:15px;">Chat en Direct</h2>
         <div class="chat-messages" id="chatMessages"></div>
         <div class="chat-input">
-            <input type="text" id="pseudo" placeholder="Ton pseudo" style="max-width:150px;">
-            <input type="text" id="messageInput" placeholder="Ton message...">
+            <input type="text" id="pseudo" placeholder="Pseudo (max 20)" maxlength="20">
+            <input type="text" id="messageInput" placeholder="Message (max 250)..." maxlength="250" oninput="updateCharCount()">
             <button onclick="sendMessage()">Envoyer</button>
         </div>
-        <p class="cooldown-msg" id="cooldownMsg">⏳ Attends 15 minutes avant d'envoyer un autre message !</p>
+        <div class="char-count"><span id="charCount">0</span>/250</div>
+        <p class="cooldown-msg" id="cooldownMsg"></p>
     </div>
 
     <script>
         let lastMessageTime = {};
 
+        // Compteur visiteurs simulé
+        function updateCompteur() {
+            const base = 10;
+            const variation = Math.floor(Math.random() * 20);
+            document.getElementById('compteur').textContent = base + variation;
+        }
+        updateCompteur();
+        setInterval(updateCompteur, 30000);
+
+        function updateCharCount() {
+            const msg = document.getElementById('messageInput').value;
+            document.getElementById('charCount').textContent = msg.length;
+        }
+
         function sendMessage() {
-            const pseudo = document.getElementById('pseudo').value.trim() || 'Anonyme';
+            const pseudo = document.getElementById('pseudo').value.trim();
             const message = document.getElementById('messageInput').value.trim();
             const cooldownMsg = document.getElementById('cooldownMsg');
             const now = Date.now();
 
+            if (!pseudo) { alert('⚠️ Entre un pseudo !'); return; }
+            if (pseudo.length > 20) { alert('⚠️ Pseudo trop long ! Max 20 caractères.'); return; }
             if (!message) return;
+            if (message.length > 250) { alert('⚠️ Message trop long ! Max 250 caractères.'); return; }
 
-            // Vérifier cooldown 15 minutes
             if (lastMessageTime[pseudo] && now - lastMessageTime[pseudo] < 15 * 60 * 1000) {
                 const restant = Math.ceil((15 * 60 * 1000 - (now - lastMessageTime[pseudo])) / 60000);
                 cooldownMsg.style.display = 'block';
@@ -163,14 +218,18 @@
             const chatMessages = document.getElementById('chatMessages');
             const div = document.createElement('div');
             div.className = 'chat-message';
-            div.innerHTML = `<strong style="color:#53fc18;">${pseudo}</strong> : ${message}`;
+
+            const now_date = new Date();
+            const heure = `${now_date.getHours().toString().padStart(2,'0')}:${now_date.getMinutes().toString().padStart(2,'0')}`;
+
+            div.innerHTML = `<strong style="color:#53fc18;">${pseudo}</strong><span class="heure">${heure}</span> : ${message}`;
             chatMessages.appendChild(div);
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
             document.getElementById('messageInput').value = '';
+            document.getElementById('charCount').textContent = '0';
         }
 
-        // Envoyer avec Entrée
         document.getElementById('messageInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') sendMessage();
         });
