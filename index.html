@@ -39,8 +39,6 @@
         }
         h1 { color: #53fc18; padding: 10px 20px 20px; font-size: 36px; }
         .visiteurs { color: #aaa; font-size: 14px; margin-bottom: 15px; }
-
-        /* Stream + Chat côte à côte */
         .stream-section {
             display: flex;
             width: 90%;
@@ -56,7 +54,6 @@
             border: none;
             border-radius: 10px;
         }
-
         .boutons {
             display: flex;
             justify-content: center;
@@ -76,7 +73,6 @@
         }
         .discord-btn:hover { background-color: #4752c4; }
 
-        /* RESPONSIVE MOBILE */
         @media (max-width: 768px) {
             .stream-section { flex-direction: column; width: 100%; }
             iframe.stream { height: 250px; }
@@ -109,7 +105,7 @@
         <div class="video-container">
             <iframe
                 class="stream"
-                src="https://player.kick.com/c-slk"
+                src="https://player.kick.com/afk-iptv"
                 allowfullscreen
                 allow="autoplay; fullscreen">
             </iframe>
@@ -117,7 +113,7 @@
         <div class="chat-container">
             <iframe
                 class="chat"
-                src="https://www.kick.com/c-slk/chatroom">
+                src="https://www.kick.com/afk-iptv/chatroom">
             </iframe>
         </div>
     </div>
@@ -130,7 +126,6 @@
     </div>
 
     <script>
-        // Compteur réel
         fetch('https://api.countapi.xyz/hit/afk-tv-baloo/visits')
             .then(res => res.json())
             .then(data => {
